@@ -229,6 +229,10 @@ app.get('/main', (req,res) => {
     res.sendFile( __dirname + '/html/index.html')
 })
 
+app.get('/carts', (req,res) =>{
+    res.sendFile(__dirname + '/html/cart.html')
+})
+
 app.get("/", function (req,res){
     res.set({
         "Allow-access-Allow-Origin": '*'
