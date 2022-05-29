@@ -175,7 +175,8 @@
     <th scope="col">#</th>
     <th scope="col">Title</th>
     <th scope="col">Description</th>
-    <th scope="col"></th>
+    <th scope="col">Price</th>
+    <th scope="col">Category</th>
     <th></th>
     <th></th>
     </thead>
@@ -185,6 +186,8 @@
             <td>{{inc @index}}</td>
             <td>{{ title }}</td>
             <td>{{ description }}</td>
+            <td>{{ price }}</td>
+            <td>{{ category }}</td>
         </tr>
     {{/each}}
     </tbody>

@@ -204,14 +204,21 @@ app.post('/edit_user/:username', async(req, res) => {
 app.post('/add_item', async (req, res) => {
 
     let title = req.body.title;
-    let description = req.body.description;
+    let path_to_image = req.body.path_to_image;
+    let price = req.body.price;
+    let category = req.body.category;
 
-    let iteee = {
+    let category_id = await CategoriesSchema.findOne({name: category}).lean();
+    let item = {
         "title": title,
-        "description": description
-    }
+        "image": path_to_image,
+        "price": price,
+        "category": category_id
 
-    await ItemSchema.create(iteee);
+    }
+    console.log(typecategory_id);
+    console.log(category_id);
+    // await ItemSchema.create(item);
 
     return res.redirect('/admins')
 })
