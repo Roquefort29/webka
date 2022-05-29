@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const hbs = require("express-hbs");
 const UsersSchema = require('./models/Users');
 const AdminSchema = require('./models/Admins')
+const ItemSchema = require('./models/Item')
 const cookieParser = require('cookie-parser');
 
 const app = express();
@@ -199,6 +200,20 @@ app.post('/edit_user/:username', async(req, res) => {
     return res.redirect('/admins')
 })
 
+app.post('/add_item', async (req, res) => {
+
+    let title = req.body.title;
+    let description = req.body.description;
+
+    let iteee = {
+        "title": title,
+        "description": description
+    }
+
+    await ItemSchema.create(iteee);
+
+    return res.redirect('/admins')
+})
 
 
 app.get('/bags', (req,res) => {
