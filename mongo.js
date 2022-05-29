@@ -5,6 +5,7 @@ const hbs = require("express-hbs");
 const UsersSchema = require('./models/Users');
 const AdminSchema = require('./models/Admins')
 const ItemSchema = require('./models/Item')
+const CategoriesSchema = require('./models/Categories')
 const cookieParser = require('cookie-parser');
 
 const app = express();
@@ -240,8 +241,9 @@ app.get('/futbolka', (req,res) => {
     res.sendFile( __dirname + '/html/futbolka.html')
 })
 
-app.get('/figure', (req,res) => {
-    res.sendFile( __dirname + '/html/figure.html')
+app.get('/figure', async (req, res) => {
+    let items = await ItemSchema.find().lean();
+    res.render('figure', {items: items})
 })
 
 app.get('/main', (req,res) => {
