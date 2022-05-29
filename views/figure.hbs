@@ -75,7 +75,7 @@
                 </ul>
                 <nav class="nav">
                     <a class="title__link" href="/carts"><img class="icons" width="40" height="40" src="icons/cart.png"
-                                                         align="top"></a>
+                                                              align="top"></a>
                     <a class="title__link" href="/register"><img class="icons" width="40" height="40"
                                                                  src="icons/user.png" align="top"></a>
                 </nav>
@@ -138,96 +138,24 @@
 
 <div class="container" style="margin-top:40px">
     <div class="row">
-        <div class="col-md-4">
+        {{#each items}}
+        <div class="col-md-4 mt-5">
             <div class="card border-0">
-                <img class="card-img-top" id="sui" src="figures/f7.jpg" alt="Card image cap" width="240px"
+                <img class="card-img-top" id="sui" src="{{ image }}" alt="Card image cap" width="240px"
                      height="360px">
                 <div class="card-body text-center">
-                    <h5 class="card-title">Naruto Uzumaki</h5>
-                    <h5 class="card-text " style="color : black">16 590 тг</h5>
+                    <h5 class="card-title">{{ title }}</h5>
+                    <h5 class="card-text " style="color : black">{{ price }} тг</h5>
                     <button type="button" class="btn btn-dark"
                             onclick="window.location.href = 'https://anime-figures.ru/index.php?id=4392' ;"
                             role="button">
-                        Buy now
+                        Add to card
                     </button>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card border-0">
-                <img class="card-img-top" id="ui" src="figures/f6.jpg" alt="Card image cap" width="240px"
-                     height="360px">
-                <div class="card-body text-center">
-                    <h5 class="card-title">Hatake Kakashi</h5>
-                    <h5 class="card-text" style="color : black">13 890 тг.</h5>
-                    <button type="button" class="btn btn-dark"
-                            onclick="window.location.href = 'https://anime-figures.ru/index.php?id=4392' ;"
-                            role="button">
-                        Buy now
-                    </button>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card border-0">
-                <img class="card-img-top" src="figures/imgonline-com-ua-Resize-PNfNTqpxKqy.jpg" alt="Card image cap"
-                     width="240px" height="360px">
-                <div class="card-body text-center">
-                    <h5 class="card-title">Hashibira Inosuke </h5>
-                    <h5 class="card-text" style="color : black">16 590 тг.</h5>
-                    <button type="button" class="btn btn-dark"
-                            onclick="window.location.href = 'https://anime-figures.ru/index.php?id=4392' ;"
-                            role="button">
-                        Buy now
-                    </button>
-                </div>
-            </div>
-        </div>
+        {{/each}}
 
-
-        <div class="col-md-4 text-center">
-            <div class="card border-0" style="margin-top: 40px ">
-                <img class="card-img-top" src="figures/dazai.jpeg" alt="Card image cap" width="240px" height="360px">
-                <div class="card-body text-center">
-                    <h5 class="card-title">Kotegawa Yui</h5>
-                    <h5 class="card-text" style="color : black">13 990 тг</h5>
-                    <button type="button" class="btn btn-dark"
-                            onclick="window.location.href = 'https://anime-figures.ru/index.php?id=4392' ;"
-                            role="button">
-                        Buy now
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="card border-0" style="margin-top: 40px ">
-                <img class="card-img-top" src="figures/f8.jpg" alt="Card image cap" width="240px" height="360px">
-                <div class="card-body text-center">
-                    <h5 class="card-title">Giorno Giovanna</h5>
-                    <h5 class="card-text" style="color : black">12 990тг</h5>
-                    <button type="button" class="btn btn-dark"
-                            onclick="window.location.href = 'https://anime-figures.ru/index.php?id=4392' ;"
-                            role="button">
-                        Buy now
-                    </button>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card border-0" style="margin-top: 40px ">
-                <img class="card-img-top" src="figures/f4.jpg" alt="Card image cap" width="240px" height="360px">
-                <div class="card-body text-center">
-                    <h5 class="card-title">Kochou Shinobu </h5>
-                    <h5 class="card-text" style="color : black">7 500тг</h5>
-                    <button type="button" class="btn btn-dark"
-                            onclick="window.location.href = 'https://anime-figures.ru/index.php?id=4392' ;"
-                            role="button">
-                        Buy now
-                    </button>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 <div class="between2">
