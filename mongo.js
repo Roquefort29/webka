@@ -213,12 +213,10 @@ app.post('/add_item', async (req, res) => {
         "title": title,
         "image": path_to_image,
         "price": price,
-        "category": category_id
-
+        "category": category_id.id
     }
-    console.log(typecategory_id);
-    console.log(category_id);
-    // await ItemSchema.create(item);
+
+    await ItemSchema.create(item);
 
     return res.redirect('/admins')
 })
