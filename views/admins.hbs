@@ -169,6 +169,29 @@
 <div class="between2">
 </div>
 
+<div class="main-body" style="margin-left:5cm;margin-bottom: 1cm; margin-top: 30px; margin-right: 5cm">
+<table class = "table">
+    <thead>
+    <th scope="col">#</th>
+    <th scope="col">Title</th>
+    <th scope="col">Description</th>
+    <th scope="col"></th>
+    <th></th>
+    <th></th>
+    </thead>
+    <tbody>
+    {{#each item}}
+        <tr>
+            <td>{{inc @index}}</td>
+            <td>{{ title }}</td>
+        </tr>
+    {{/each}}
+    </tbody>
+</table>
+
+<a class="btn btn-success" href="/add_item">Add new item</a>
+</div>
+
 <div class="button">
     <div class="container-xxl-pt-5" style="background-color: #7B68EE">
         <div class="kontakty">

@@ -23,9 +23,11 @@ hbs.registerHelper("inc", function(value, options)
     return parseInt(value) + 1;
 });
 
+app.get('/add_item', (req, res) => {
+    res.sendFile(__dirname + '/html/add_item.html')
+});
 
-
-mongoose.connect('mongodb+srv://roquefort:SuperSyr29@cluster0.wsvfe.mongodb.net/?retryWrites=true&w=majority',{
+mongoose.connect('mongodb://127.0.0.1:27017/RegForm',{
     useNewUrlParser:true,
     useUnifiedTopology: true
 });
@@ -196,6 +198,8 @@ app.post('/edit_user/:username', async(req, res) => {
 
     return res.redirect('/admins')
 })
+
+
 
 app.get('/bags', (req,res) => {
     res.sendFile( __dirname + '/html/bags.html')

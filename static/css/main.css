@@ -290,3 +290,8 @@ input[type=submit] {
   margin: 4px 2px;
   border-radius: 10px;
 }
+
+.main {
+  margin-left: 20px;
+  margin-top: 100px;
+}
