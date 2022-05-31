@@ -5,6 +5,7 @@ const hbs = require("express-hbs");
 const UsersSchema = require('./models/Users');
 const AdminSchema = require('./models/Admins')
 const ItemSchema = require('./models/Item')
+const CartSchema = require('./models/Cartts')
 const CategoriesSchema = require('./models/Categories')
 const cookieParser = require('cookie-parser');
 
@@ -113,6 +114,11 @@ app.get('/admins', async (req, res) => {
     res.render('admins', {users: users})
 })
 
+app.get('/admins_item', async (req,res) => {
+    let items = await ItemSchema.find().lean();
+    res.render('admins_item', {item: items})
+})
+
 app.get('/sort_by_username', async (req, res) => {
     let users = await UsersSchema.find().sort({username: 'asc'}).lean();
     res.render('admins', {users: users})
@@ -178,9 +184,14 @@ app.post('/add_user', async (req, res) => {
 
 app.get('/delete_user/:username', async (req, res) => {
     let username = req.params.username;
-    console.log(username)
     await UsersSchema.deleteOne({username: username})
     return res.redirect('/admins')
+})
+
+app.get('/delete_item/:title', async (req,res) =>{
+    let title = req.params.title;
+    await ItemSchema.deleteOne({title: title})
+    return res.redirect('/admins_item')
 })
 
 app.get('/edit_user/:username', async (req, res) => {
@@ -200,6 +211,9 @@ app.post('/edit_user/:username', async(req, res) => {
 
     return res.redirect('/admins')
 })
+app.get('/add_item', async (req,res) => {
+    res.sendFile(__dirname + '/html/add_item.html')
+})
 
 app.post('/add_item', async (req, res) => {
 
@@ -218,9 +232,17 @@ app.post('/add_item', async (req, res) => {
 
     await ItemSchema.create(item);
 
-    return res.redirect('/admins')
+    return res.redirect('/admins_item')
 })
 
+app.get('/add_to_cart/:item_id', async (req, res) => {
+    let item_id = req.params.item_id;
+    let itemId = await CartSchema.findOne({item_id: item_id}).lean();
+})
+
+app.post('/add_to_cart/:item_id', async (req, res) =>{
+
+})
 
 app.get('/bags', async (req, res) => {
     let items = await ItemSchema.find({category: 5}).lean();
@@ -259,8 +281,9 @@ app.get('/main', (req,res) => {
     res.sendFile( __dirname + '/html/index.html')
 })
 
-app.get('/carts', (req,res) =>{
-    res.sendFile(__dirname + '/html/cart.html')
+app.get('/carts', async (req, res) => {
+    let items = await ItemSchema.find({}).lean();
+    res.render('carttss', {items: items})
 })
 
 app.get("/", function (req,res){
