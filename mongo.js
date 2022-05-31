@@ -29,7 +29,7 @@ app.get('/add_item', (req, res) => {
     res.sendFile(__dirname + '/html/add_item.html')
 });
 
-mongoose.connect('mongodb://127.0.0.1:27017/RegForm',{
+mongoose.connect('mongodb+srv://roquefort:SuperSyr29@cluster0.wsvfe.mongodb.net/?retryWrites=true&w=majority',{
     useNewUrlParser:true,
     useUnifiedTopology: true
 });
@@ -270,6 +270,6 @@ app.get("/", function (req,res){
     return res.redirect('/register')
 })
 
-app.listen(2929, function () {
+app.listen(process.env.PORT || 2929, function () {
     console.log("Server Started");
 })
