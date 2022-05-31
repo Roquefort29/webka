@@ -222,32 +222,36 @@ app.post('/add_item', async (req, res) => {
 })
 
 
-app.get('/bags', (req,res) => {
-    res.sendFile( __dirname + '/html/bags.html')
+app.get('/bags', async (req, res) => {
+    let items = await ItemSchema.find({category: 5}).lean();
+    res.render('bags', {items: items})
 })
 
 app.get('/profile', async (req, res) => {
     res.render('profile', {user: req.cookies.user})
 })
 
-app.get('/manga', (req,res) => {
-    res.sendFile( __dirname + '/html/manga.html')
+app.get('/manga', async (req, res) => {
+    let items = await ItemSchema.find({category: 2}).lean();
+    res.render('manga', {items: items})
 })
 
 app.get('/reports', (req,res) => {
     res.sendFile( __dirname + '/html/reports.html')
 })
 
-app.get('/pillow', (req,res) => {
-    res.sendFile( __dirname + '/html/pillow.html')
+app.get('/pillow', async (req, res) => {
+    let items = await ItemSchema.find({category: 3}).lean();
+    res.render('pillow', {items: items})
 })
 
-app.get('/futbolka', (req,res) => {
-    res.sendFile( __dirname + '/html/futbolka.html')
+app.get('/futbolka', async (req, res) => {
+    let items = await ItemSchema.find({category: 4}).lean();
+    res.render('t-shirts', {items: items})
 })
 
 app.get('/figure', async (req, res) => {
-    let items = await ItemSchema.find().lean();
+    let items = await ItemSchema.find({category: 1}).lean();
     res.render('figure', {items: items})
 })
 
