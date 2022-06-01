@@ -235,10 +235,13 @@ app.post('/add_item', async (req, res) => {
     return res.redirect('/admins_item')
 })
 
-app.get('/add_to_cart/:item_id', async (req, res) => {
-    let item_id = req.params.item_id;
-    await CartSchema.findOne({item_id: item_id}).lean();
-    return res.redirect('/add_to_cart')
+app.get('/add_to_cart', async (req, res) => {
+    let item_id = req.query.item_id;
+    let userLogin = req.cookies.user.username;
+    console.log(item_id)
+
+    await CartSchema.create({username: userLogin, item_id: item_id}).then()
+    return res.redirect('back')
 })
 
 app.get('/bags', async (req, res) => {
@@ -279,8 +282,15 @@ app.get('/main', (req,res) => {
 })
 
 app.get('/carts', async (req, res) => {
-    let item_id = await CartSchema.find({}).lean();
-    res.render('carttss', {item_id: item_id})
+    let items = await CartSchema.find({username: req.cookies.user.username}).lean()
+    let a = []
+
+    for(var i = 0; i < items[0].item_id.length; i++){
+        let b = await ItemSchema.find({_id:items[0].item_id[i]})
+        a.push(b[0])
+    }
+    console.log(a)
+    res.render('carttss', {items: a})
 })
 
 app.get("/", function (req,res){
