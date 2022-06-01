@@ -237,11 +237,8 @@ app.post('/add_item', async (req, res) => {
 
 app.get('/add_to_cart/:item_id', async (req, res) => {
     let item_id = req.params.item_id;
-    let itemId = await CartSchema.findOne({item_id: item_id}).lean();
-})
-
-app.post('/add_to_cart/:item_id', async (req, res) =>{
-
+    await CartSchema.findOne({item_id: item_id}).lean();
+    return res.redirect('/add_to_cart')
 })
 
 app.get('/bags', async (req, res) => {
@@ -282,8 +279,8 @@ app.get('/main', (req,res) => {
 })
 
 app.get('/carts', async (req, res) => {
-    let items = await ItemSchema.find({}).lean();
-    res.render('carttss', {items: items})
+    let item_id = await CartSchema.find({}).lean();
+    res.render('carttss', {item_id: item_id})
 })
 
 app.get("/", function (req,res){
