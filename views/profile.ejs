@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+
+<%- include('head.ejs'); -%>
+
+<body class="main-body">
+
+<%- include('header.ejs'); -%>
+
+<div style="margin: 30px 5cm 1cm;">
+    <div class="row">
+        <div class="form-holder">
+            <div class="form-profile-content">
+                <div class="form-items">
+                    <h3>User Info </h3>
+                    <br>
+                    <h4>Username: <%= user.username %></h4>
+                    <h4>Email: <%= user.email %></h4>
+                    <a href="/logout" class="btn btn-outline-primary mt-3">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<%- include('footer.ejs'); -%>
+
+</body>
+</html>

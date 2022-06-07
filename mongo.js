@@ -32,6 +32,17 @@ mongoose.connect('mongodb+srv://roquefort:SuperSyr29@cluster0.wsvfe.mongodb.net/
     useUnifiedTopology: true
 });
 
+
+app.get('/login', (req, res) => {
+    res.render('login');
+})
+
+app.get('/register', (req,res) => {
+    res.render('register')
+})
+
+
+
 app.get('/main', (req,res) => {
     res.render('main');
 })
@@ -88,7 +99,10 @@ app.get('/bags', async (req, res) => {
 
 
 
-
+app.get('/logout', (req, res) => {
+    res.clearCookie('user');
+    return res.redirect('/login');
+})
 
 
 app.get('/add_item', (req, res) => {
@@ -98,9 +112,7 @@ app.get('/add_item', (req, res) => {
 
 
 
-app.get('/register', (req,res) => {
-    res.sendFile( __dirname + '/html/register.html')
-})
+
 
 app.post("/register", async (req, res) => {
     let name = req.body.name;
@@ -143,11 +155,6 @@ app.post("/register", async (req, res) => {
     await UsersSchema.create(data);
 
     return res.redirect('/login');
-})
-
-
-app.get('/login', (req, res) => {
-    res.sendFile(__dirname + '/html/login.html')
 })
 
 app.post('/login', async (req, res) => {
@@ -305,6 +312,7 @@ app.get('/add_to_cart', async (req, res) => {
 
 
 app.get('/profile', async (req, res) => {
+    if (req.cookies.user === null) return res.redirect('/login');
     res.render('profile', {user: req.cookies.user})
 })
 
