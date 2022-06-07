@@ -22,19 +22,32 @@ app.use(bodyParser.urlencoded({ extended: true}))
 app.use(cookieParser())
 
 
-app.get('/add_item', (req, res) => {
-    res.sendFile(__dirname + '/html/add_item.html')
-});
+const db = mongoose.connection;
+
+db.on('error',()=>console.log("Error to connection"));
+db.once('open',()=>console.log("Connected to Database"));
 
 mongoose.connect('mongodb+srv://roquefort:SuperSyr29@cluster0.wsvfe.mongodb.net/?retryWrites=true&w=majority',{
     useNewUrlParser:true,
     useUnifiedTopology: true
 });
 
-const db = mongoose.connection;
+app.get('/main', (req,res) => {
+    res.render('main');
+})
 
-db.on('error',()=>console.log("Error to connection"));
-db.once('open',()=>console.log("Connected to Database"));
+app.get('/figure', async (req, res) => {
+    let items = await ItemSchema.find({category: 1}).lean();
+    res.render('item_page', {items: items})
+})
+
+
+app.get('/add_item', (req, res) => {
+    res.sendFile(__dirname + '/html/add_item.html')
+});
+
+
+
 
 app.get('/register', (req,res) => {
     res.sendFile( __dirname + '/html/register.html')
@@ -268,14 +281,9 @@ app.get('/futbolka', async (req, res) => {
     res.render('t-shirts', {items: items})
 })
 
-app.get('/figure', async (req, res) => {
-    let items = await ItemSchema.find({category: 1}).lean();
-    res.render('figure', {items: items})
-})
 
-app.get('/main', (req,res) => {
-    res.render('main');
-})
+
+
 
 app.get('/carts', async (req, res) => {
     let items = await CartSchema.find({username: req.cookies.user.username}).lean()
