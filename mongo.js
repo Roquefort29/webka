@@ -41,6 +41,55 @@ app.get('/figure', async (req, res) => {
     res.render('item_page', {items: items})
 })
 
+app.get('/manga', async (req, res) => {
+    let items = await ItemSchema.find({category: 2}).lean();
+    res.render('item_page', {items: items})
+})
+
+app.get('/pillow', async (req, res) => {
+    let items = await ItemSchema.find({category: 3}).lean();
+    res.render('item_page', {items: items})
+})
+
+app.get('/futbolka', async (req, res) => {
+    let items = await ItemSchema.find({category: 4}).lean();
+    res.render('item_page', {items: items})
+})
+
+app.get('/bags', async (req, res) => {
+    let items = await ItemSchema.find({category: 5}).lean();
+    res.render('item_page', {items: items})
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 app.get('/add_item', (req, res) => {
     res.sendFile(__dirname + '/html/add_item.html')
@@ -253,33 +302,21 @@ app.get('/add_to_cart', async (req, res) => {
     return res.redirect('back')
 })
 
-app.get('/bags', async (req, res) => {
-    let items = await ItemSchema.find({category: 5}).lean();
-    res.render('bags', {items: items})
-})
+
 
 app.get('/profile', async (req, res) => {
     res.render('profile', {user: req.cookies.user})
 })
 
-app.get('/manga', async (req, res) => {
-    let items = await ItemSchema.find({category: 2}).lean();
-    res.render('manga', {items: items})
-})
+
 
 app.get('/reports', (req,res) => {
     res.sendFile( __dirname + '/html/reports.html')
 })
 
-app.get('/pillow', async (req, res) => {
-    let items = await ItemSchema.find({category: 3}).lean();
-    res.render('pillow', {items: items})
-})
 
-app.get('/futbolka', async (req, res) => {
-    let items = await ItemSchema.find({category: 4}).lean();
-    res.render('t-shirts', {items: items})
-})
+
+
 
 
 
