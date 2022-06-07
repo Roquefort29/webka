@@ -1,30 +1,26 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
-const hbs = require("express-hbs");
+const ejs = require('ejs');
 const UsersSchema = require('./models/Users');
 const AdminSchema = require('./models/Admins')
 const ItemSchema = require('./models/Item')
 const CartSchema = require('./models/Cartts')
 const CategoriesSchema = require('./models/Categories')
 const cookieParser = require('cookie-parser');
+const path = require("path");
+
 
 const app = express();
 
-app.engine('hbs', hbs.express4({partialsDir: __dirname + '/views'}));
+app.set('views', path.join(__dirname, 'views'))
+app.set('view engine', 'ejs')
 
 app.use(bodyParser.json());
 app.use(express.static('static'))
 app.use(bodyParser.urlencoded({ extended: true}))
 app.use(cookieParser())
 
-app.set('view engine', 'hbs');
-app.set('views', __dirname + '/views');
-
-hbs.registerHelper("inc", function(value, options)
-{
-    return parseInt(value) + 1;
-});
 
 app.get('/add_item', (req, res) => {
     res.sendFile(__dirname + '/html/add_item.html')
@@ -278,7 +274,7 @@ app.get('/figure', async (req, res) => {
 })
 
 app.get('/main', (req,res) => {
-    res.sendFile( __dirname + '/html/index.html')
+    res.render('main');
 })
 
 app.get('/carts', async (req, res) => {

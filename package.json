@@ -13,7 +13,8 @@
     "mongoose": "^6.3.4",
     "nodemon": "^2.0.16",
     "socket.io": "^4.5.1",
-    "validator": "^13.7.0"
+    "validator": "^13.7.0",
+    "yohoho": "^0.2.0"
   },
   "scripts": {
     "start": "node mongo.js",
