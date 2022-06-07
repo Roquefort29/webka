@@ -128,30 +128,7 @@
 </section>
 
 
-<div class="main-body" style="margin-left:5cm;margin-bottom: 1cm; margin-top: 30px; margin-right: 5cm">
-    <table class="table">
-        <thead>
-        <tr>
-            <th scope="col">#</th>
-            <th scope="col"><a href="/sort_by_username">Name</a></th>
-            <th scope="col"><a href="/sort_by_email">Email</a></th>
-        </tr>
-        </thead>
-        <tbody>
-        {{#each users}}
-            <tr>
-                <td>{{inc @index}}</td>
-                <td>{{ username }}</td>
-                <td>{{ email }}</td>
-                <td><a href="/edit_user/{{username}}">Edit</a></td>
-                <td><a href="/delete_user/{{username}}">Delete</a></td>
-            </tr>
-        {{/each}}
-        </tbody>
-    </table>
 
-    <a class="btn btn-success" href="/add_user">Add new user</a>
-</div>
 
 <div class="between2">
 </div>

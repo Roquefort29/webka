@@ -33,86 +33,39 @@ mongoose.connect('mongodb+srv://roquefort:SuperSyr29@cluster0.wsvfe.mongodb.net/
 });
 
 
+app.get("/", function (req,res){
+    return res.redirect('/main')
+})
+
 app.get('/login', (req, res) => {
     res.render('login');
+})
+
+app.post('/login', async (req, res) => {
+    let username = req.body.name;
+    let password = req.body.password;
+    let user = await UsersSchema.findOne({username: username, password:password}).lean()
+
+    if (user === null) {
+        return res.send("Username or password is wrong")
+    }
+
+    res.cookie("user", user)
+
+    if(await AdminSchema.findOne({username: username}).lean() !== null){
+        return res.redirect('/admins')
+    }
+    return res.redirect('/profile')
 })
 
 app.get('/register', (req,res) => {
     res.render('register')
 })
 
-
-
-app.get('/main', (req,res) => {
-    res.render('main');
-})
-
-app.get('/figure', async (req, res) => {
-    let items = await ItemSchema.find({category: 1}).lean();
-    res.render('item_page', {items: items})
-})
-
-app.get('/manga', async (req, res) => {
-    let items = await ItemSchema.find({category: 2}).lean();
-    res.render('item_page', {items: items})
-})
-
-app.get('/pillow', async (req, res) => {
-    let items = await ItemSchema.find({category: 3}).lean();
-    res.render('item_page', {items: items})
-})
-
-app.get('/futbolka', async (req, res) => {
-    let items = await ItemSchema.find({category: 4}).lean();
-    res.render('item_page', {items: items})
-})
-
-app.get('/bags', async (req, res) => {
-    let items = await ItemSchema.find({category: 5}).lean();
-    res.render('item_page', {items: items})
-})
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 app.get('/logout', (req, res) => {
     res.clearCookie('user');
     return res.redirect('/login');
 })
-
-
-app.get('/add_item', (req, res) => {
-    res.sendFile(__dirname + '/html/add_item.html')
-});
-
-
-
-
-
 
 app.post("/register", async (req, res) => {
     let name = req.body.name;
@@ -157,27 +110,104 @@ app.post("/register", async (req, res) => {
     return res.redirect('/login');
 })
 
-app.post('/login', async (req, res) => {
-    let username = req.body.name;
-    let password = req.body.password;
-    let user = await UsersSchema.findOne({username: username, password:password}).lean()
-
-    if (user === null) {
-        return res.send("Username or password is wrong")
-    }
-
-    res.cookie("user", user)
-
-    if(await AdminSchema.findOne({username: username}).lean() !== null){
-        return res.redirect('/admins')
-    }
-    return res.redirect('/profile')
+app.get('/profile', async (req, res) => {
+    if (req.cookies.user === undefined) return res.redirect('/login');
+    res.render('profile', {user: req.cookies.user})
 })
 
-app.get('/admins', async (req, res) => {
+app.get('/main', (req,res) => {
+    res.render('main');
+})
+
+app.get('/figure', async (req, res) => {
+    let items = await ItemSchema.find({category: 1}).lean();
+    res.render('item_page', {items: items})
+})
+
+app.get('/manga', async (req, res) => {
+    let items = await ItemSchema.find({category: 2}).lean();
+    res.render('item_page', {items: items})
+})
+
+app.get('/pillow', async (req, res) => {
+    let items = await ItemSchema.find({category: 3}).lean();
+    res.render('item_page', {items: items})
+})
+
+app.get('/futbolka', async (req, res) => {
+    let items = await ItemSchema.find({category: 4}).lean();
+    res.render('item_page', {items: items})
+})
+
+app.get('/bags', async (req, res) => {
+    let items = await ItemSchema.find({category: 5}).lean();
+    res.render('item_page', {items: items})
+})
+
+
+app.get('/users', async (req, res) => {
+    if (req.cookies.user === undefined) return res.redirect('/main');
+
+    let username = req.cookies.user.username;
+
+    if(await AdminSchema.findOne({username: username}).lean() === null) return res.redirect('/main');
+
     let users = await UsersSchema.find().lean();
-    res.render('admins', {users: users})
+    res.render('users', {users: users})
 })
+
+app.get('/items', async (req, res) => {
+    if (req.cookies.user === undefined) return res.redirect('/main');
+
+    let username = req.cookies.user.username;
+
+    if(await AdminSchema.findOne({username: username}).lean() === null) return res.redirect('/main');
+
+    let items = await ItemSchema.find().lean();
+    res.render('items', {items: items})
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+app.get('/add_item', (req, res) => {
+    res.sendFile(__dirname + '/html/add_item.html')
+});
+
+
+
+
+
+
+
+
+
+
+
 
 app.get('/admins_item', async (req,res) => {
     let items = await ItemSchema.find().lean();
@@ -311,10 +341,7 @@ app.get('/add_to_cart', async (req, res) => {
 
 
 
-app.get('/profile', async (req, res) => {
-    if (req.cookies.user === null) return res.redirect('/login');
-    res.render('profile', {user: req.cookies.user})
-})
+
 
 
 
@@ -342,12 +369,7 @@ app.get('/carts', async (req, res) => {
     res.render('carttss', {items: a})
 })
 
-app.get("/", function (req,res){
-    res.set({
-        "Allow-access-Allow-Origin": '*'
-    })
-    return res.redirect('/register')
-})
+
 
 app.listen(process.env.PORT || 2929, function () {
     console.log("Server Started");

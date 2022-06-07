@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<%- include('head.ejs'); -%>
+<body class="main-body">
+
+<%- include('header.ejs'); -%>
+
+<div style="margin: 30px 5cm 1cm;">
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col"><a href="/sort_by_username">Name</a></th>
+            <th scope="col"><a href="/sort_by_email">Email</a></th>
+        </tr>
+        </thead>
+        <tbody>
+        <% users.forEach(function(user, index) { %>
+            <tr>
+                <td><%= index %></td>
+                <td><%= user.username %></td>
+                <td><%= user.email %></td>
+                <td><a href="/edit_user/<%= user.username %>">Edit</a></td>
+                <td><a href="/delete_user/<%= user.username %>">Delete</a></td>
+            </tr>
+        <% }); %>
+        </tbody>
+    </table>
+
+    <a class="btn btn-success" href="/add_user">Add new user</a>
+</div>
+
+<%- include('footer.ejs'); -%>
+
+</body>
+</html>

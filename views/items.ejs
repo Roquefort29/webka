@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<%- include('head.ejs'); -%>
+<body class="main-body">
+
+<%- include('header.ejs'); -%>
+
+<div style="margin: 30px 5cm 1cm;">
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col"><a href="/sort_by_username">Name</a></th>
+            <th scope="col"><a href="/sort_by_email">Email</a></th>
+        </tr>
+        </thead>
+        <tbody>
+        <% items.forEach(function(item, index) { %>
+            <tr>
+                <td><%= index %></td>
+                <td><%= item.title %></td>
+                <td><%= item.image %></td>
+                <td><%= item.price %></td>
+                <td><%= item.category %></td>
+                <td><a href="/delete_item/<%= item.title %>">Delete</a></td>
+            </tr>
+        <% }); %>
+        </tbody>
+    </table>
+
+    <a class="btn btn-success" href="/add_item">Add new item</a>
+</div>
+
+<%- include('footer.ejs'); -%>
+
+</body>
+</html>
