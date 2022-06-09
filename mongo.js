@@ -4,7 +4,7 @@ const bodyParser = require("body-parser");
 const ejs = require('ejs');
 const UsersSchema = require('./models/Users');
 const ItemSchema = require('./models/Item')
-const CartSchema = require('./models/Cartts')
+const CartSchema = require('./models/Carts')
 const CategoriesSchema = require('./models/Categories')
 const cookieParser = require('cookie-parser');
 const path = require("path");
@@ -150,6 +150,47 @@ app.get('/users', async (req, res) => {
     res.render('users', {user: req.cookies.user, users: users})
 })
 
+app.get('/sort_by_username', async (req, res) => {
+    if (req.cookies.user === undefined) return res.redirect('/main');
+
+    if(!req.cookies.user.is_admin) return res.redirect('/main');
+
+    let users = await UsersSchema.find().sort({username: 'asc'}).lean();
+    res.render('users', {user: req.cookies.user, users: users})
+})
+
+app.get('/sort_by_email', async (req, res) => {
+    if (req.cookies.user === undefined) return res.redirect('/main');
+
+    if(!req.cookies.user.is_admin) return res.redirect('/main');
+
+    let users = await UsersSchema.find().sort({email: 'asc'}).lean();
+    res.render('users', {user: req.cookies.user, users: users})
+})
+
+app.get('/edit_user/:username', async (req, res) => {
+    let username = req.params.username;
+    let edited_user = await UsersSchema.findOne({username:username}).lean()
+    return res.render('edit', {user: req.cookies.user, edited_user: edited_user})
+})
+
+app.post('/edit_user/:username', async(req, res) => {
+    let username = req.params.username;
+
+    let new_username = req.body.name;
+    let new_email = req.body.email;
+
+    await UsersSchema.updateOne({username: username}, {username: new_username, email: new_email});
+
+    return res.redirect('/users')
+})
+
+app.get('/delete_user/:username', async (req, res) => {
+    let username = req.params.username;
+    await UsersSchema.deleteOne({username: username})
+    return res.redirect('/users')
+})
+
 app.get('/items', async (req, res) => {
     if (req.cookies.user === undefined) return res.redirect('/main');
 
@@ -159,16 +200,81 @@ app.get('/items', async (req, res) => {
     res.render('items', {user: req.cookies.user, items: items})
 })
 
+app.get('/delete_item/:title', async (req,res) =>{
+    let title = req.params.title;
+    await ItemSchema.deleteOne({title: title})
+    return res.redirect('/items')
+})
 
+app.get('/add_to_cart', async (req, res) => {
+    let item_id = req.query.item_id;
+    let user = req.cookies.user
 
+    let user_items = await CartSchema.findOne({username: user.username}).lean()
 
+    if (user_items === null) {
+        await CartSchema.create({username: user.username, items: [item_id]})
+    } else {
+        user_items.items.push(item_id)
+        await CartSchema.updateOne({username: user.username}, {items: user_items.items})
+    }
 
+    return res.redirect('back')
+})
 
+app.get('/carts', async (req, res) => {
+    if (req.cookies.user === undefined) return res.redirect('/main');
 
+    let user_items = await CartSchema.findOne({username: req.cookies.user.username}).lean()
 
+    let items = {}
 
+    if (user_items !== null) {
+        if (user_items.items !== undefined) {
+            user_items = user_items.items;
+            for (let i = 0; i < user_items.length; i++) {
+                if (items[user_items[i]] === undefined) {
+                    items[user_items[i]] = {count: 0};
+                    items[user_items[i]].item = await ItemSchema.findOne({_id: user_items[i]})
+                }
+                items[user_items[i]].count++;
+                items[user_items[i]].total = items[user_items[i]].item.price * items[user_items[i]].count;
+            }
+        }
+    }
 
+    let total = 0;
+    Object.keys(items).forEach(function (key) {
+        total += items[key].total;
+    })
 
+    res.render('carts', {user: req.cookies.user, items: items, total: total})
+})
+
+app.get('/delete_from_cart', async (req, res) => {
+    let item_id = req.query.item_id
+    let user = req.cookies.user
+    let user_items = await CartSchema.findOne({username: user.username}).lean()
+
+    let index = user_items.items.indexOf(item_id);
+    if (index > -1) {
+        user_items.items.splice(index, 1); // 2nd parameter means remove one item only
+    }
+
+    await CartSchema.updateOne({username: user.username}, {items: user_items.items})
+
+    return res.redirect('back')
+})
+
+app.get('/order', (req, res) => {
+    res.render('order', {user: req.cookies.user})
+})
+
+app.get('/ordered', async (req, res) => {
+    await CartSchema.deleteOne({username: req.cookies.user.username })
+
+    return res.redirect('/main')
+})
 
 
 
@@ -201,26 +307,8 @@ app.get('/add_item', (req, res) => {
 
 
 
-app.get('/admins_item', async (req,res) => {
-    let items = await ItemSchema.find().lean();
-    res.render('admins_item', {item: items})
-})
-
-app.get('/sort_by_username', async (req, res) => {
-    let users = await UsersSchema.find().sort({username: 'asc'}).lean();
-    res.render('admins', {users: users})
-})
 
 
-app.get('/sort_by_email', async (req, res) => {
-    let users = await UsersSchema.find().sort({email: 'asc'}).lean();
-    res.render('admins', {users: users})
-})
-
-app.get('/sort_by_city', async (req, res) => {
-    let users = await UsersSchema.find().sort({city: 'asc'}).lean();
-    res.render('admins', {users: users})
-})
 
 app.get('/add_user', (req, res)=>{
     res.sendFile(__dirname + '/html/add_user.html')
@@ -269,35 +357,9 @@ app.post('/add_user', async (req, res) => {
     return res.redirect('/admins');
 })
 
-app.get('/delete_user/:username', async (req, res) => {
-    let username = req.params.username;
-    await UsersSchema.deleteOne({username: username})
-    return res.redirect('/admins')
-})
 
-app.get('/delete_item/:title', async (req,res) =>{
-    let title = req.params.title;
-    await ItemSchema.deleteOne({title: title})
-    return res.redirect('/admins_item')
-})
 
-app.get('/edit_user/:username', async (req, res) => {
-    let username = req.params.username;
-    let user = await UsersSchema.findOne({username:username}).lean()
-    return res.render('edit', {user:user})
-})
 
-app.post('/edit_user/:username', async(req, res) => {
-    let username = req.params.username;
-
-    let new_username = req.body.name;
-    let new_email = req.body.email;
-    let new_city = req.body.city;
-
-    await UsersSchema.updateOne({username: username}, {username: new_username, email: new_email, city: new_city});
-
-    return res.redirect('/admins')
-})
 app.get('/add_item', async (req,res) => {
     res.sendFile(__dirname + '/html/add_item.html')
 })
@@ -322,14 +384,7 @@ app.post('/add_item', async (req, res) => {
     return res.redirect('/admins_item')
 })
 
-app.get('/add_to_cart', async (req, res) => {
-    let item_id = req.query.item_id;
-    let userLogin = req.cookies.user.username;
-    console.log(item_id)
 
-    await CartSchema.create({username: userLogin, item_id: item_id}).then()
-    return res.redirect('back')
-})
 
 
 
@@ -349,19 +404,7 @@ app.get('/reports', (req,res) => {
 
 
 
-app.get('/carts', async (req, res) => {
-    if (req.cookies.user === undefined) return res.redirect('/main');
 
-    let items = await CartSchema.find({username: req.cookies.user.username}).lean()
-    let a = []
-
-    for(var i = 0; i < items.length; i++){
-        let b = await ItemSchema.find({_id:items[0].item_id[i]})
-        a.push(b[0])
-    }
-    console.log(a)
-    res.render('carttss', {items: a})
-})
 
 
 

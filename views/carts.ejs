@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<%- include('head.ejs'); -%>
+<body class="main-body">
+
+<%- include('header.ejs'); -%>
+
+<div class="container" style="margin-top:40px">
+    <div class="row">
+        <% if (total === 0) { %>
+            <h4 class="text-center my-5">Your cart is empty. Add some items!</h4>
+        <% } else { %>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Count</th>
+                    <th scope="col">Total</th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <% Object.keys(items).forEach(function (key) { %>
+                    <tr>
+                        <td><%= items[key].item.title %></td>
+                        <td><%= items[key].item.price %></td>
+                        <td><%= items[key].count %></td>
+                        <td><%= items[key].total %></td>
+                        <td><a href="/delete_from_cart?item_id=<%= key %>">Delete</a></td>
+                    </tr>
+                <% }) %>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td><%= total %></td>
+                    <td></td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div class="d-flex justify-content-end my-5">
+                <a href="/order" class="btn btn-outline-success">Order</a>
+            </div>
+        <% } %>
+    </div>
+</div>
+
+<%- include('footer.ejs'); -%>
+
+</body>
+</html>

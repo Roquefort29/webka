@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<%- include('head.ejs'); -%>
+<body class="main-body">
+
+<%- include('header.ejs'); -%>
+
+<script>
+    let answer = prompt('Are you sure? Y/N');
+
+    if (answer === 'Y') location.href = '/ordered'
+    else location.href = '/carts'
+
+</script>
+
+<%- include('footer.ejs'); -%>
+
+</body>
+</html>
