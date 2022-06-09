@@ -3,7 +3,6 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const ejs = require('ejs');
 const UsersSchema = require('./models/Users');
-const AdminSchema = require('./models/Admins')
 const ItemSchema = require('./models/Item')
 const CartSchema = require('./models/Cartts')
 const CategoriesSchema = require('./models/Categories')
@@ -38,7 +37,7 @@ app.get("/", function (req,res){
 })
 
 app.get('/login', (req, res) => {
-    res.render('login');
+    res.render('login', {user: req.cookies.user});
 })
 
 app.post('/login', async (req, res) => {
@@ -52,14 +51,11 @@ app.post('/login', async (req, res) => {
 
     res.cookie("user", user)
 
-    if(await AdminSchema.findOne({username: username}).lean() !== null){
-        return res.redirect('/admins')
-    }
     return res.redirect('/profile')
 })
 
 app.get('/register', (req,res) => {
-    res.render('register')
+    res.render('register', {user: req.cookies.user})
 })
 
 app.get('/logout', (req, res) => {
@@ -116,55 +112,51 @@ app.get('/profile', async (req, res) => {
 })
 
 app.get('/main', (req,res) => {
-    res.render('main');
+    res.render('main', {user: req.cookies.user});
 })
 
 app.get('/figure', async (req, res) => {
     let items = await ItemSchema.find({category: 1}).lean();
-    res.render('item_page', {items: items})
+    res.render('item_page', {user: req.cookies.user, items: items})
 })
 
 app.get('/manga', async (req, res) => {
     let items = await ItemSchema.find({category: 2}).lean();
-    res.render('item_page', {items: items})
+    res.render('item_page', {user: req.cookies.user, items: items})
 })
 
 app.get('/pillow', async (req, res) => {
     let items = await ItemSchema.find({category: 3}).lean();
-    res.render('item_page', {items: items})
+    res.render('item_page', {user: req.cookies.user, items: items})
 })
 
 app.get('/futbolka', async (req, res) => {
     let items = await ItemSchema.find({category: 4}).lean();
-    res.render('item_page', {items: items})
+    res.render('item_page', {user: req.cookies.user, items: items})
 })
 
 app.get('/bags', async (req, res) => {
     let items = await ItemSchema.find({category: 5}).lean();
-    res.render('item_page', {items: items})
+    res.render('item_page', {user: req.cookies.user, items: items})
 })
 
 
 app.get('/users', async (req, res) => {
     if (req.cookies.user === undefined) return res.redirect('/main');
 
-    let username = req.cookies.user.username;
-
-    if(await AdminSchema.findOne({username: username}).lean() === null) return res.redirect('/main');
+    if(!req.cookies.user.is_admin) return res.redirect('/main');
 
     let users = await UsersSchema.find().lean();
-    res.render('users', {users: users})
+    res.render('users', {user: req.cookies.user, users: users})
 })
 
 app.get('/items', async (req, res) => {
     if (req.cookies.user === undefined) return res.redirect('/main');
 
-    let username = req.cookies.user.username;
-
-    if(await AdminSchema.findOne({username: username}).lean() === null) return res.redirect('/main');
+    if(!req.cookies.user.is_admin) return res.redirect('/main');
 
     let items = await ItemSchema.find().lean();
-    res.render('items', {items: items})
+    res.render('items', {user: req.cookies.user, items: items})
 })
 
 
@@ -358,10 +350,12 @@ app.get('/reports', (req,res) => {
 
 
 app.get('/carts', async (req, res) => {
+    if (req.cookies.user === undefined) return res.redirect('/main');
+
     let items = await CartSchema.find({username: req.cookies.user.username}).lean()
     let a = []
 
-    for(var i = 0; i < items[0].item_id.length; i++){
+    for(var i = 0; i < items.length; i++){
         let b = await ItemSchema.find({_id:items[0].item_id[i]})
         a.push(b[0])
     }
