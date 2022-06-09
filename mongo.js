@@ -6,6 +6,7 @@ const UsersSchema = require('./models/Users');
 const ItemSchema = require('./models/Item')
 const CartSchema = require('./models/Carts')
 const CategoriesSchema = require('./models/Categories')
+const HistorySchema = require('./models/Histories')
 const cookieParser = require('cookie-parser');
 const path = require("path");
 
@@ -228,20 +229,7 @@ app.get('/carts', async (req, res) => {
     let user_items = await CartSchema.findOne({username: req.cookies.user.username}).lean()
 
     let items = {}
-
-    if (user_items !== null) {
-        if (user_items.items !== undefined) {
-            user_items = user_items.items;
-            for (let i = 0; i < user_items.length; i++) {
-                if (items[user_items[i]] === undefined) {
-                    items[user_items[i]] = {count: 0};
-                    items[user_items[i]].item = await ItemSchema.findOne({_id: user_items[i]})
-                }
-                items[user_items[i]].count++;
-                items[user_items[i]].total = items[user_items[i]].item.price * items[user_items[i]].count;
-            }
-        }
-    }
+    if (user_items !== null) items = await init_items(user_items.items)
 
     let total = 0;
     Object.keys(items).forEach(function (key) {
@@ -271,16 +259,52 @@ app.get('/order', (req, res) => {
 })
 
 app.get('/ordered', async (req, res) => {
+    let user = req.cookies.user
+    let user_items = await CartSchema.findOne({username: user.username})
+    await HistorySchema.create({username: user.username, items: user_items.items})
     await CartSchema.deleteOne({username: req.cookies.user.username })
+
+
 
     return res.redirect('/main')
 })
 
+app.get('/history', async (req, res) => {
+    let user = req.cookies.user
+    let history = await HistorySchema.find({username: user.username}).lean()
+
+    let tmp = []
+    for (let i = 0; i < history.length; i++) {
+        let x = {items: await init_items(history[i].items)}
+        x.date = history[i].date
+        x.total = 0;
+        Object.keys(x.items).forEach(function (key) {
+            x.total += x.items[key].total;
+        })
+        tmp.push(x)
+    }
+
+    res.render('history', {user: user, history: tmp})
+})
 
 
 
+async function init_items(user_items) {
+    let items = {}
 
+    if (user_items !== undefined) {
+        for (let i = 0; i < user_items.length; i++) {
+            if (items[user_items[i]] === undefined) {
+                items[user_items[i]] = {count: 0};
+                items[user_items[i]].item = await ItemSchema.findOne({_id: user_items[i]})
+            }
+            items[user_items[i]].count++;
+            items[user_items[i]].total = items[user_items[i]].item.price * items[user_items[i]].count;
+        }
+    }
 
+    return items;
+}
 
 
 
