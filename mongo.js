@@ -306,36 +306,8 @@ async function init_items(user_items) {
     return items;
 }
 
-
-
-
-
-
-
-
-
-
-
-app.get('/add_item', (req, res) => {
-    res.sendFile(__dirname + '/html/add_item.html')
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 app.get('/add_user', (req, res)=>{
-    res.sendFile(__dirname + '/html/add_user.html')
+    res.render('add_user', {user: req.cookies.user})
 })
 
 app.post('/add_user', async (req, res) => {
@@ -378,14 +350,11 @@ app.post('/add_user', async (req, res) => {
 
     await UsersSchema.create(data);
 
-    return res.redirect('/admins');
+    return res.redirect('/users');
 })
 
-
-
-
 app.get('/add_item', async (req,res) => {
-    res.sendFile(__dirname + '/html/add_item.html')
+    res.render('add_item', {user: req.cookies.user})
 })
 
 app.post('/add_item', async (req, res) => {
@@ -407,30 +376,6 @@ app.post('/add_item', async (req, res) => {
 
     return res.redirect('/admins_item')
 })
-
-
-
-
-
-
-
-
-
-app.get('/reports', (req,res) => {
-    res.sendFile( __dirname + '/html/reports.html')
-})
-
-
-
-
-
-
-
-
-
-
-
-
 
 app.listen(process.env.PORT || 2929, function () {
     console.log("Server Started");

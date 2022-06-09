@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+
+<%- include('head.ejs'); -%>
+
+<body class="main-body">
+
+<%- include('header.ejs'); -%>
+
+<div style="margin: 30px 5cm 1cm;">
+    <div class="row">
+        <div class="form-holder">
+            <div class="form-profile-content ">
+                <div class="form-items">
+                    <h3>New Item Post</h3>
+                    <form id="registration_form" class="requires-validation" novalidate method="post">
+                        <input class="feedback-input" id="form_title" type="text" name="title" placeholder="Title"
+                               required>
+
+                        <span class="error_form" id="username_error_message"></span>
+                        <input class="feedback-input" id="form_description" type="text" name="path_to_image"
+                               placeholder="Path To Image" required>
+
+                        <input class="feedback-input mt-3" id="form_price" type="number" name="price"
+                               placeholder="Price" required>
+
+                        <select name="category">
+                            <option value="Figure">Фигурки</option>
+                            <option value="Manga">Манги</option>
+                            <option value="Pillow">Подушки</option>
+                            <option value="T-Shirts">Футболки</option>
+                            <option value="Bags">Рюкзаки</option>
+                        </select>
+                        <br>
+
+                        <div class="form-button mt-3">
+                            <button id="submit" type="submit" id="btnSubmit" class="btn btn-light">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('footer.ejs'); -%>
+
+</body>
+</html>
