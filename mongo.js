@@ -374,7 +374,7 @@ app.post('/add_item', async (req, res) => {
 
     await ItemSchema.create(item);
 
-    return res.redirect('/admins_item')
+    return res.redirect('/items')
 })
 
 app.listen(process.env.PORT || 2929, function () {
